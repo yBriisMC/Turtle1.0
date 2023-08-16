@@ -1,2 +1,1 @@
-# Turtle1.0
-# Bomba
+# Turtle1.0, Servidor: https://discord.gg/TjE8vbbWQF
