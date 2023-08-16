@@ -1,0 +1,90 @@
+const Discord = require("discord.js")
+const client = require('..');
+const fs = require("fs")   
+ 
+client.on("guildCreate", guild => {
+
+const { dbConnect } = client.mysql
+ let con; 
+ con = dbConnect();
+    
+ con.query(`INSERT INTO tickets (guild, author, channel, category, staff, button, ticket) VALUE ('${guild.id}',  'indefinido', 'indefinido', 'indefinido', 'indefinido', 'Open Ticket', 'indefinido')`, function(err, results, fields) {
+
+    if (err) {
+
+      console.log(err.message);
+
+    }
+
+  })
+  
+   
+ con.query(`INSERT INTO serverinfo (guild, author, channel, ip, port, lgn) VALUE ('${guild.id}',  'indefinido', 'indefinido', 'indefinido', 'indefinido', 'indefinido')`, function(err, results, fields) {
+
+    if (err) {
+
+      console.log(err.message);
+
+    }
+
+  })
+
+    
+  con.query(`INSERT INTO guilds (guild, author, lgn) VALUE ('${guild.id}',  'indefinido', 'indefinido')`, function(err, results, fields) {
+
+    if (err) {
+
+      console.log(err.message);
+
+    }
+
+  })
+
+    
+    
+    console.log("Joined a new guild: " + guild.name);
+
+})
+
+client.on("guildDelete", guild => {
+
+    const { dbConnect } = client.mysql
+ let con; 
+ con = dbConnect();
+
+ con.query(`DELETE FROM tickets WHERE guild ='${guild.id}'`, function(err, results, fields) {
+
+    if (err) {
+
+      console.log(err.message);
+
+    }
+
+  })
+    
+ con.query(`DELETE FROM serverinfo WHERE guild ='${guild.id}'`, function(err, results, fields) {
+
+    if (err) {
+
+      console.log(err.message);
+
+    }
+
+  })
+
+   
+con.query(`DELETE FROM guilds WHERE guild ='${guild.id}'`, function(err, results, fields) {
+
+    if (err) {
+
+      console.log(err.message);
+
+    }
+
+  })
+
+
+    
+      console.log("Left a guild: " + guild.name);
+    
+})

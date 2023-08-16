@@ -1,0 +1,63 @@
+var mysql = require('mysql');
+const Discord = require("discord.js")
+const client = require('..');
+const fs = require("fs")  
+
+var con = mysql.createConnection({
+  host     : '188.191.97.77',
+  user     : 'u591_TBD0zdmv1U',
+  password : 'Mz4WPy!6xh3.ImIODhjbP+Vi',
+  database : 's591_miners'
+});
+
+con.connect(function(err) {
+  if (err) {
+      
+       
+      
+    console.error('error mysql' + err.stack);
+    return;
+  }
+  console.log('connected as id ' + con.threadId);
+});
+
+con.query("CREATE TABLE IF NOT EXISTS tickets(guild TEXT, author TEXT, channel TEXT, category TEXT, staff TEXT, button TEXT, ticket TEXT)", function(err, results, fields) {
+
+    if (err) {
+
+      console.log(err.message);
+
+    }
+
+  });
+
+
+con.query("CREATE TABLE IF NOT EXISTS serverinfo(guild TEXT, author TEXT, channel TEXT, ip TEXT, port TEXT, lgn TEXT)", function(err, results, fields) {
+
+    if (err) {
+
+      console.log(err.message);
+
+    }
+
+  })
+
+con.query("CREATE TABLE IF NOT EXISTS guilds(guild TEXT, author TEXT, lgn TEXT)", function(err, results, fields) {
+
+    if (err) {
+
+      console.log(err.message);
+
+    }
+
+  })
+
+
+
+
+module.exports = {
+
+    dbConnect: () => {
+        return con
+    }
+}

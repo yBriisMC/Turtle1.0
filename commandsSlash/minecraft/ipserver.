@@ -1,0 +1,177 @@
+const Discord = require("discord.js")
+const { QuickDB } = require("quick.db") 
+const db = new QuickDB()
+
+module.exports = {
+  name: "ip", 
+  description: "[ 🧱 Minecraft ] Use para ver ip do servidor de Minecraft.", 
+  type: Discord.ApplicationCommandType.ChatInput,
+ options: [
+        {
+            name: "ip",
+            description: "ip do servidor.",
+            type: Discord.ApplicationCommandOptionType.String,
+            required: false,
+        },
+        {
+            name: "porta",
+            description: "porta do servidor.",
+            type: Discord.ApplicationCommandOptionType.String,
+            required: false,
+        },
+    ],
+  run: async(client, interaction) => {
+  let guild = interaction.guild;
+  let ping = client.bedrock.ping;
+  let desc = await db.get(`descserver${guild.id}`);
+  let ip = interaction.options.getString("ip")
+  let porta = interaction.options.getString("porta")
+  let ip2 = await db.get(`ipserver${guild.id}`) || "ip não encontrado";
+  let porta2 = await db.get(`portaserver${guild.id}`) || "porta não encontrado";
+      if (ip2 === 'ip não encontrado' || porta2 === 'porta não encontrado') {
+
+  return interaction.reply({ content: 'Algumas configurações não foram definidas. Por favor, define usando o comando `/setserver`.', ephemeral: true});
+      }
+if(!ip) ip = ip2
+if(!porta) porta = porta2
+ping({ host: ip, port: porta }).then(res => {
+    let players = res.playersOnline;
+    let version = res.version;
+    let max = res.playersMax;
+    let maxp = `${players}/${max}`;
+    let sucesso = new Discord.EmbedBuilder()
+
+        .setColor(client.color)
+        .setTimestamp()
+    .setThumbnail(interaction.guild.iconURL({ size: 1024 }))
+        .setFooter({ text: `${client.user.username}`, iconURL: `${client.user.displayAvatarURL()}`})
+        .setAuthor({ name: interaction.guild.name, iconURL: interaction.guild.iconURL({ dinamyc: true })})
+       .addFields(
+             {
+                        name: `🌐  **IP**`,
+                        value: `\`\`\`${ip}\`\`\``,
+                        inline: false,
+                    },
+             {
+                        name: '⚙  **Porta**',
+                        value: `\`\`\`${porta}\`\`\``,
+                        inline: false,
+                    },
+             {
+                        name: `📜  **Descrição**`,
+                        value: `\`\`\`${desc}\`\`\``,
+                        inline: false,
+                    },
+             {
+                        name: `📍  **Versão**`,
+                        value: `\`\`\`${version}\`\`\``,
+                        inline: false,
+                    },
+             {
+
+                        name: `💠  **Status**`,
+
+                        value: `\`\`\`Online\`\`\``,
+
+                        inline: false,
+
+                    },
+             {
+
+                        name: `👥  **Players**`,
+
+                        value: `\`\`\`Jogadores: ${maxp}\`\`\``,
+
+                        inline: false,
+
+                    },
+                       )
+   // console.log(res)
+    
+    interaction.reply({ content: `${interaction.user}`, embeds: [sucesso] });
+}).catch((error) => {
+    let sucesso = new Discord.EmbedBuilder()
+
+        .setColor(`Red`)
+
+        .setTimestamp()
+
+    .setThumbnail(interaction.guild.iconURL({ size: 1024 }))
+
+        .setFooter({ text: `${client.user.username}`, iconURL: `${client.user.displayAvatarURL()}`})
+
+        .setAuthor({ name: interaction.guild.name, iconURL: interaction.guild.iconURL({ dinamyc: true })})
+
+       .addFields(
+
+             {
+
+                        name: `🌐  **IP**`,
+
+                        value: `\`\`\`${ip}\`\`\``,
+
+                        inline: false,
+
+                    },
+
+             {
+
+                        name: '⚙  **Porta**',
+
+                        value: `\`\`\`${porta}\`\`\``,
+
+                        inline: false,
+
+                    },
+
+             {
+
+                        name: `📜  **Descrição**`,
+
+                        value: `\`\`\`${desc}\`\`\``,
+
+                        inline: false,
+
+                    },
+
+             {
+
+                        name: `📍  **Versão**`,
+
+                        value: `\`\`\`Null\`\`\``,
+
+                        inline: false,
+
+                    },
+
+             {
+
+                        name: `💠  **Status**`,
+
+                        value: `\`\`\`Offline\`\`\``,
+
+                        inline: false,
+
+                    },
+
+             {
+
+                        name: `👥  **Players**`,
+
+                        value: `\`\`\`Jogadores:\`\`\``,
+
+                        inline: false,
+
+                    },
+
+                       )
+
+   // console.log(res)
+
+    
+
+    interaction.reply({ content: `${interaction.user}`, embeds: [sucesso] });
+})
+   
+      }
+   }

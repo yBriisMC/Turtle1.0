@@ -1,0 +1,72 @@
+const Discord = require("discord.js")
+const { QuickDB } = require("quick.db") 
+const db = new QuickDB()
+
+module.exports = {
+  name: "setserver", 
+  description: "[ 🧱 Minecraft ] Use para definir informações de um servidor de minecraft (atualizando a cada 1min)", 
+  type: Discord.ApplicationCommandType.ChatInput,
+options: [
+        {
+            name: "chat",
+            description: "Mencione um canal.",
+            type: Discord.ApplicationCommandOptionType.Channel,
+            required: true,
+        },
+        {
+            name: "ip",
+            description: "ip do servidor.",
+            type: Discord.ApplicationCommandOptionType.String,
+            required: true,
+        },
+        {
+            name: "porta",
+            description: "porta do servidor.",
+            type: Discord.ApplicationCommandOptionType.String,
+            required: true,
+        },
+        {
+            name: "desc",
+            description: "Descrição do servidor(exemplo: RankUP, Factions).",
+            type: Discord.ApplicationCommandOptionType.String,
+            required: false,
+        },
+
+    ],
+
+  run: async(client, interaction) => {
+
+  if (!interaction.member.permissions.has(Discord.PermissionFlagsBits.ManageMessages))
+        return interaction.reply({
+            content: `**❌ | ${interaction.user}, Você precisa da permissão \`Gerenciar Mensagens\` para usar este comando!**`,
+            ephemeral: true,
+        })
+
+   //lets opções
+var chat = interaction.options.getChannel("chat")
+var ip = interaction.options.getString("ip")
+var porta = interaction.options.getString("porta")
+var desc = interaction.options.getString("desc")
+if(!desc) desc = "Nenhuma Descrição definidas";
+  //db Quick
+await db.set(`ipserver${interaction.guild.id}`, ip);
+await db.set(`portaserver${interaction.guild.id}`, porta);
+await db.set(`descserver${interaction.guild.id}`, desc);
+await db.set(`chatserver${interaction.guild.id}`, chat.id);
+  // send message  
+  /*let inicio = new Discord.EmbedBuilder()
+   .setTitle("** Status**")
+   .setColor(client.color)
+   .setDescription("Carregando...")
+let message = await chat.send({embeds: [inicio] })      
+  await db.set(`messageidserver${interaction.guild.id}`,message.id);
+      */
+let sucesso = new Discord.EmbedBuilder()
+
+        .setColor(client.color)
+        .setTitle(`** Sucesso**`)
+        .setDescription(`${client.emoji.verify} Servidor salvo em nosso banco de dados, status: **INDISPONÍVEL** ip: **/ip**`)
+    interaction.reply({ content: `${interaction.user}`, embeds: [sucesso], ephemeral: true });
+       
+  }
+}
